@@ -64,6 +64,7 @@ const form = ref({
 })
 const error = ref<Record<string,string>>({})
 const confirmPassword = ref('')
+const show = ref(false)
 const showPw = ref(false)
 const showPw2 = ref(false)
 

@@ -62,6 +62,7 @@ const error = ref<Record<string,string>>({})
 const confirmPassword = ref('')
 const showPw = ref(false)
 const showPw2 = ref(false)
+const show = ref(false)
 
 const emailReget = /^[^\s]+@[^\s]+\.[^\s]{2,}$/i
 function validateForm(){

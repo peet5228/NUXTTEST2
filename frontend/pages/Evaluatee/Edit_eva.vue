@@ -1,11 +1,10 @@
 <template>
-    <v-container fluid class="fill-height">
-        <v-row justify="center" align="center">
-            <v-col cols="12" md="8" lg="6">
+    <v-container>
+        <v-row>
+            <v-col cols="12">
                 <v-card>
-                    <v-sheet class="pa-4 text-center" color="#7d0c14">
-                        <h1 class="text-h5 font-weight-bold">สมัครสมาชิก</h1>
-                        <p class="text-sm mt-2">ระบบประเมินบุคลากรวิทยาลัยเทคนิคน่าน</p>
+                    <v-sheet class="pa-4 text-center" color="#404040">
+                        <h1 class="text-h5 font-weight-bold">แก้ไขข้อมูลส่วนตัว</h1>
                     </v-sheet>
                     <v-card-text>
                         <v-form @submit.prevent="saveMember">
@@ -23,19 +22,20 @@
                                     <v-text-field label="ชื่อผู้ใช้" v-model="form.username" :error-messages="error.username"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" md="6">
-                                    <v-text-field label="รหัสผ่าน" v-model="form.password" :error-messages="error.password"
+                                    <label class="text-warning">&nbsp;[ กรอกเฉพาะตอนเแปลี่ยนรหัสผ่าน! ]</label>
+                                    <v-text-field label="รหัสผ่านใหม่" v-model="form.password" :error-messages="error.password"
                                     :type="showPw ? 'text' : 'password'" :append-inner-icon="show ? 'mdi-eye-off' : 'mdi-eye'" @click:append-inner="showPw = !showPw"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" md="6">
+                                    <label class="text-warning">&nbsp;[ กรอกเฉพาะตอนเแปลี่ยนรหัสผ่าน! ]</label>
                                     <v-text-field label="ยืนยันรหัสผ่าน" v-model="confirmPassword" :error-messages="error.confirmPassword"
                                     :type="showPw2 ? 'text' : 'password'" :append-inner-icon="show ? 'mdi-eye-off' : 'mdi-eye'" @click:append-inner="showPw2 = !showPw2"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-select label="เลือกประเภทสมาชิก" :items="['ฝ่ายบุคลากร','กรรมการประเมิน','ผู้รับการประเมินผล']" v-model="form.role" :error-messages="error.role"></v-select>
+                                    <v-alert>{{ form.role }}</v-alert>
                                 </v-col>
                                 <v-col cols="12" class="text-center">
-                                    <v-btn type="submit" color="#7d0c14">สมัคร</v-btn>&nbsp;&nbsp;<v-btn type="reset" color="#7d0c14">ยกเลิก</v-btn>
-                                    <p class="text-sm mt-4">มีบัญชีอยู่แล้ว? <NuxtLink to="/"><u>เข้าสู่ระบบ</u></NuxtLink></p>
+                                    <v-btn type="submit" color="success">แก้ไข</v-btn>&nbsp;&nbsp;<v-btn type="reset" color="error">ยกเลิก</v-btn>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -48,11 +48,7 @@
 
 <script setup lang="ts">
 import axios from 'axios'
-import {api} from '../API/base'
-
-definePageMeta({
-    layout:false
-})
+import {eva} from '../../API/base'
 
 const form = ref({
     first_name:'',
@@ -77,25 +73,37 @@ function validateForm(){
     else if(!emailReget.test(f.email.trim()))error.value.email='รูปแบบอีเมลไม่ถูกต้อง!'
     if(!f.username.trim())error.value.username='กรุณากรอกชื่อผู้ใช้!'
     else if(f.username.trim().length < 4)error.value.username='ต้องมีอย่างน้อย 4 ตัวอักษร!'
-    if(!f.password.trim())error.value.password='กรุณากรอกรหัสผ่าน!'
-    else if(f.password.trim().length < 6)error.value.password='ต้องมีอย่างน้อย 6 ตัวอักษร!'
-    if(!confirmPassword.value.trim())error.value.confirmPassword='กรุณายืนยันรหัสผ่าน!'
-    else if(confirmPassword.value.trim() != f.password.trim())error.value.confirmPassword='รหัสผ่านไม่ตรงกัน!'
+    if(f.password && f.password.trim()){
+        if(f.password.trim().length < 6)error.value.password='ต้องมีอย่างน้อย 6 ตัวอักษร!'
+        if(!confirmPassword.value.trim())error.value.confirmPassword='กรุณายืนยันรหัสผ่าน!'
+        else if(confirmPassword.value.trim() != f.password.trim())error.value.confirmPassword='รหัสผ่านไม่ตรงกัน!'
+    }
     if(!f.role.trim())error.value.role='กรุณาเลือกประเภทสมาชิก!'
     return Object.keys(error.value).length === 0
 }
 
 const saveMember = async () =>{
     if(!validateForm())return
+    const token = localStorage.getItem('token')
     try{
-        await axios.post(`${api}/auth/regis`,form.value)
-        alert('สมัครสมาชิกสำเร็จ')
+        await axios.put(`${eva}/edit_eva`,form.value,{headers:{Authorization:`Bearer ${token}`}})
+        alert('แก้ไขข้อมูลสำเร็จ')
         navigateTo('/')
     }catch(err){
-        console.error('Error POST Member!',err)
+        console.error('Error PUT User!',err)
     }
 }
 
+const fetchUser = async () =>{
+    const token = localStorage.getItem('token')
+    try{
+        const res = await axios.get(`${eva}/edit_eva`,{headers:{Authorization:`Bearer ${token}`}})
+        form.value = res.data
+    }catch(err){
+        console.error('Error GET User!',err)
+    }
+}
+onMounted(fetchUser)
 </script>
 
 <style scoped>

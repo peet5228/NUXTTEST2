@@ -5,10 +5,11 @@
       <v-toolbar-title>NTC evaluation system</v-toolbar-title>
       <v-spacer />
       <!-- โปรไฟล์ -->
-       <p>ผู้ใช้งาน : {{ user.first_name }} {{ user.last_name }} <br> {{ user.role }}</p>&nbsp;&nbsp;
+       <p class="text-center">ผู้ใช้งาน : {{ user.first_name }} {{ user.last_name }} <br> {{ user.role }}</p>&nbsp;&nbsp;
       <v-btn icon="mdi-logout" variant="text" @click="logout" />&nbsp;&nbsp;
     </v-app-bar>
 
+    <ClientOnly>
     <v-navigation-drawer v-model="drawer" color="#404040" app :temporary="isMoblie" :permanent="!isMoblie">
       <v-list density="comfortable">
         <v-list-item v-for="item in navitem" :key="item.title" :to="item.to">
@@ -18,6 +19,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+    </ClientOnly>
 
     <v-main>
       <v-container fluid class="py-6">
@@ -45,11 +47,13 @@ const roles = [
     {title:'จัดการหัวข้อการประเมิน',to:'/Staff/Topic',role:'ฝ่ายบุคลากร'},
     {title:'จัดการตัวชี้วัด',to:'/Staff/Indicate',role:'ฝ่ายบุคลากร'},
 
-    //staff
+    //commit
     {title:'รายชื่อผู้รับการประเมิน',to:'/Committee/',role:'กรรมการประเมิน'},
 
-    //staff
+    //eva
     {title:'หน้าหลัก',to:'/Evaluatee/',role:'ผู้รับการประเมินผล'},
+    {title:'แก้ไขข้อมูลส่วนตัว',to:'/Evaluatee/Edit_eva',role:'ผู้รับการประเมินผล'},
+    {title:'แบบประเมินตนเอง',to:'/Evaluatee/Selfeva',role:'ผู้รับการประเมินผล'},
 ]
 const navitem = computed(() => roles.filter((item) => item.role.includes(user.value.role)))
 
@@ -61,11 +65,16 @@ const logout = async () =>{
 
 const fetchUser = async () =>{
     const token = localStorage.getItem('token')
+    if(!token){
+      return await navigateTo('/',{replace:true})
+    }
     try{
         const res = await axios.get(`${api}/profile`,{headers:{Authorization:`Bearer ${token}`}})
         user.value = res.data
     }catch(err){
         console.error('Error GET Profile!',err)
+        localStorage.removeItem('token')
+        await navigateTo('/',{replace:true})
     }
 }
 onMounted(fetchUser)

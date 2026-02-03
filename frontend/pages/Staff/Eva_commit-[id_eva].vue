@@ -44,6 +44,7 @@ import axios from 'axios'
 import {api,staff} from '../../API/base'
 
 const token = process.client ? localStorage.getItem("token") : null
+const id_eva = useRoute().params.id_eva
 
 const people = ref([])
 const header = ref([])
@@ -52,13 +53,13 @@ const List = ref([
     {id_commit:null,id_member:'',role:''},
     {id_commit:null,id_member:'',role:''}
 ])
-const role = []
+const role = ['ประธาน','กรรมการ','เลขา']
 
 
 const fetch = async () => {
     try{
-        const r = await axios.get(`${staff}/round_eva/y`,{headers:{Authorization:`Bearer ${token}`}})
-        round.value = r.data
+        const h = await axios.get(`${staff}/commit/header/${id_eva}`,{headers:{Authorization:`Bearer ${token}`}})
+        header.value = h.data[0]
         const m = await axios.get(`${staff}/member/eva`,{headers:{Authorization:`Bearer ${token}`}})
         member.value = m.data
         const res = await axios.get(`${staff}/eva`,{headers:{Authorization:`Bearer ${token}`}})

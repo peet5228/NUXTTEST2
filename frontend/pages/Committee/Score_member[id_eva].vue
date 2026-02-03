@@ -3,7 +3,7 @@
         <v-row>
             <v-col cols="12">
                 <v-form v-if="user.status_eva === 2 || user.status_eva === 3">
-                    <h1 class="text-h5 font-weight-bold">คะแนนประเมินตนเอง</h1>
+                    <h1 class="text-h5 font-weight-bold">คะแนนประเมินผู้รับการประเมิน</h1>
                     <v-card class="pa-2 mt-2">
                         <p>ชื่อ - นามสกุล : {{ user.first_name }} {{ user.last_name }}</p>
                         <p>รอบประเมินที่ : {{ user.round_sys }} ปี {{ user.year_sys }}</p>
@@ -46,10 +46,11 @@
 
 <script setup lang="ts">
 import axios from 'axios'
-import {eva} from '../../API/base'
+import {commit} from '../../API/base'
 
 const topics = ref<any>([])
 const user = ref<any>({})
+const id_eva = useRoute().params.id_eva
 
 const viweFile = (filename:string) =>{
     const url = `http://localhost:3001/uploads/evadetail/${filename}`
@@ -59,7 +60,7 @@ const viweFile = (filename:string) =>{
 const fetchUser = async () =>{
     const token = localStorage.getItem('token')
     try{
-        const res = await axios.get(`${eva}/score_member/user`,{headers:{Authorization:`Bearer ${token}`}})
+        const res = await axios.get(`${commit}/score_member/user/${id_eva}`,{headers:{Authorization:`Bearer ${token}`}})
         user.value = res.data
     }catch(err){
         console.error('Error Get User!',err)
@@ -68,7 +69,7 @@ const fetchUser = async () =>{
 const fetchTopic = async () =>{
     const token = localStorage.getItem('token')
     try{
-        const res = await axios.get(`${eva}/score_member/topic`,{headers:{Authorization:`Bearer ${token}`}})
+        const res = await axios.get(`${commit}/score_member/topic/${id_eva}`,{headers:{Authorization:`Bearer ${token}`}})
         topics.value = res.data
     }catch(err){
         console.error('Error Get User!',err)

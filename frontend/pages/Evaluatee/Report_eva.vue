@@ -52,7 +52,7 @@
                         </v-card>
                     </div>
                     <div class="text-center mt-4">
-                        
+                        <v-btn color="warning" prepend-icon="mdi-printer" class="noP" @click="print()">พิมพ์</v-btn>
                     </div>
                 </v-form>
                 <v-alert v-else-if="user.status_eva === 1" type="info">ยังไม่ได้กรอกแบบประเมิน</v-alert>
@@ -74,6 +74,10 @@ const commits = ref<any>([])
 const viweFile = (filename:string) =>{
     const url = `http://localhost:3001/uploads/evadetail/${filename}`
     window.open(url,"__blank")
+}
+
+const print = () => {
+    window.print()
 }
 
 const fetchUser = async () =>{
@@ -119,5 +123,9 @@ onMounted(async () =>{
 </script>
 
 <style scoped>
-
+@media print{
+    .v-btn,.noP{
+        display: none;
+    }
+}
 </style>

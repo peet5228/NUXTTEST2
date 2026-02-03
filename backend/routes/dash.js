@@ -29,16 +29,60 @@ router.get('/staff',verifyToken,requireRole('ฝ่ายบุคลากร')
         res.json({
             box : [
                 {title: 'แบบประเมินทั้งหมด' , value: evaCount.total || 0},
-                {title: 'แบบประเมินที่ไม่สำเร็จ' , value: evaCount.total > 0 ` ${ ( one.total*100/evaCount.total ).toFixed(2) }% ` : '00.00%'},
-                {title: 'แบบประเมินที่สำเร็จ' , value: evaCount.total > 0 ` ${ ( two.total*100/evaCount.total ).toFixed(2) }% ` : '00.00%'},
+                {title: 'แบบประเมินที่ไม่สำเร็จ' , value: evaCount.total > 0 ? ` ${ ( one.total*100/evaCount.total ).toFixed(2) }% ` : '00.00%'},
+                {title: 'แบบประเมินที่สำเร็จ' , value: evaCount.total > 0 ? ` ${ ( two.total*100/evaCount.total ).toFixed(2) }% ` : '00.00%'},
             ],
-            box : [
-                {title: 'แบบประเมินทั้งหมด' , value: evaCount.total || 0},
-                {title: 'แบบประเมินที่ไม่สำเร็จ' , value: evaCount.total > 0 ` ${ ( one.total*100/evaCount.total ).toFixed(2) }% ` : '00.00%'},
-                {title: 'แบบประเมินที่สำเร็จ' , value: evaCount.total > 0 ` ${ ( two.total*100/evaCount.total ).toFixed(2) }% ` : '00.00%'},
+            box2 : [
+                {title: 'ผู้รับการประเมินทั้งหมด' , value: `${eva.total}` || '0'},
+                {title: 'กรรมการประเมินทั้งหมด' , value: `${commit.total}` || '0'},
             ]
         })
         // res.json(rows)
+    }catch(err){
+        console.error("Error Get",err)
+        res.status(500).json({message:'Error Get'})
+    }
+})
+
+// API สำหรับ GET ข้อมูล
+router.get('/eva',verifyToken,requireRole('ผู้รับการประเมินผล'),async (req,res) => {
+    try{
+        const id_member = req.user.id_member
+        const [[evaCount]] = await db.query(`select count(*)as total from tb_eva,tb_member where tb_member.id_member='${id_member}' and tb_member.id_member=tb_eva.id_member`)
+        const [[one]] = await db.query(`select count(*)as total from tb_eva,tb_member where tb_member.id_member='${id_member}' and tb_member.id_member=tb_eva.id_member  and status_eva=1`)
+        const [[two]] = await db.query(`select count(*)as total from tb_eva,tb_member where tb_member.id_member='${id_member}' and tb_member.id_member=tb_eva.id_member  and status_eva!=1`)
+        res.json({
+            box : [
+                {title: 'แบบประเมินทั้งหมด' , value: evaCount.total || 0},
+                {title: 'แบบประเมินที่ยังไม่ประเมิน' , value: evaCount.total > 0 ? ` ${ ( one.total*100/evaCount.total ).toFixed(2) }% ` : '00.00%'},
+                {title: 'แบบประเมินที่ประเมินแล้ว' , value: evaCount.total > 0 ? ` ${ ( two.total*100/evaCount.total ).toFixed(2) }% ` : '00.00%'},
+            ],
+        })
+        // res.json(rows)
+    }catch(err){
+        console.error("Error Get",err)
+        res.status(500).json({message:'Error Get'})
+    }
+})
+
+// API สำหรับ GET ข้อมูล
+router.get('/doc',verifyToken,requireRole('ผู้รับการประเมินผล'),async (req,res) => {
+    try{
+        const [rows] = await db.query(`select * from tb_doc order by id_doc desc`)
+        // res.json({rows,message:''})
+        res.json(rows)
+    }catch(err){
+        console.error("Error Get",err)
+        res.status(500).json({message:'Error Get'})
+    }
+})
+
+// API สำหรับ GET ข้อมูล
+router.get('/doc',verifyToken,requireRole('กรรมการปะเมิน'),async (req,res) => {
+    try{
+        const [rows] = await db.query(`select * from tb_doc order by id_doc desc`)
+        // res.json({rows,message:''})
+        res.json(rows)
     }catch(err){
         console.error("Error Get",err)
         res.status(500).json({message:'Error Get'})

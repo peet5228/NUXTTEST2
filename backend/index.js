@@ -21,6 +21,9 @@ app.use('/api/auth',auth)
 const profile = require('./routes/profile')
 app.use('/api/profile',profile)
 
+const dash = require('./routes/dash')
+app.use('/api/dash',dash)
+
 // ===== Staff endpoint API =====
 const member = require('./routes/Staff/member')
 app.use('/api/Staff/member',member)

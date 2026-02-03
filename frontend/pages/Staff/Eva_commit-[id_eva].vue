@@ -3,11 +3,21 @@
                 <v-card>
                     <v-sheet class="pa-4 text-center" color="">
                         <h1 class="text-h5 font-weight-bold">เพิ่มกรรมการ</h1>
+                        <p class="text-center">ผู้รับการประเมิน : {{ header.first_name }} {{ header.last_name }}</p>
+                        <p class="text-center">รอบการประเมิน : รอบที่ {{ header.round_sys }} ปี {{ header.year_sys }}</p>
                     </v-sheet>
                     <v-card-text>
                         <v-form @submit.prevent="saveMember">
                             <v-row>
-                                
+                                <template v-for="(c,index) in List" :key="index">
+                                    <v-col cols="12" md="6">
+                                        <v-select v-model="c.id_member" :label="`กรรมการคนที่ ${index+1}`" :items="MEMBER(index).map(p => ({title:p.fullname_commit,value:p.id_member}))" />
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <v-select v-model="c.role" :label="`ตำแหน่งกรรมการคนที่ ${index+1}`" :items="ROLE(index)" />
+                                    </v-col>
+                                </template>
+                                <v-btn color="blue"  type="submit" block>บันทึก</v-btn>
                             </v-row>
                         </v-form>
 
@@ -29,7 +39,7 @@
                                     <td class="text-center border">{{ items.role }}</td>
                                     <td class="text-center border">
                                         <!-- <v-btn class="text-white" size="small" color="warning" @click="edit(items)">แก้ไข</v-btn>&nbsp; -->
-                                        <v-btn class="text-white" size="small" color="error" @click="del(items.id_eva)">ลบ</v-btn>
+                                        <v-btn class="text-white" size="small" color="error" @click="del(items.id_commit)">ลบ</v-btn>
                                     </td>
                                 </tr>
                             </tbody>
@@ -44,6 +54,7 @@ import axios from 'axios'
 import {api,staff} from '../../API/base'
 
 const token = process.client ? localStorage.getItem("token") : null
+const id_eva = useRoute().params.id_eva
 
 const people = ref([])
 const header = ref([])
@@ -52,43 +63,65 @@ const List = ref([
     {id_commit:null,id_member:'',role:''},
     {id_commit:null,id_member:'',role:''}
 ])
-const role = []
+const role = ['ประธาน','กรรมการ','เลขา']
 
+const namemap = computed(() => Object.fromEntries(people.value.map(p => [p.id_member,p.fullname_commit])))
+const nameOf = (id:number) => namemap.value[id]
 
 const fetch = async () => {
     try{
-        const r = await axios.get(`${staff}/round_eva/y`,{headers:{Authorization:`Bearer ${token}`}})
-        round.value = r.data
-        const m = await axios.get(`${staff}/member/eva`,{headers:{Authorization:`Bearer ${token}`}})
-        member.value = m.data
-        const res = await axios.get(`${staff}/eva`,{headers:{Authorization:`Bearer ${token}`}})
-        result.value = res.data
+        const h = await axios.get(`${staff}/commit/header/${id_eva}`,{headers:{Authorization:`Bearer ${token}`}})
+        header.value = h.data[0]
+        const res = await axios.get(`${staff}/commit/${id_eva}`,{headers:{Authorization:`Bearer ${token}`}})
+        people.value = res.data.before
+        const useData = res.data.after
+        if(useData.length === 0){
+            List.value = [
+                {id_commit:null,id_member:'',role:''},
+                {id_commit:null,id_member:'',role:''},
+                {id_commit:null,id_member:'',role:''}
+            ]
+        }else{
+            List.value = useData.map(c => ({
+                id_commit:c.id_commit,id_member:c.id_member,role:c.role
+            }))
+            while(List.value.length < 3){
+                List.value.push({id_commit:null,id_member:'',role:''})
+            }
+        }
     }catch(err){
         console.error("Error Fetching",err)
     }
 }
 
+const MEMBER = (idx:number) => {
+    const picked = List.value.map( (c,i) => (i !== idx ? c.id_member : null) )
+    return people.value.filter((p) => !picked.includes(p.id_member))
+}
+
+const ROLE = (idx:number) => {
+    const picked = List.value.map( (c,i) => (i !== idx ? c.role : null) )
+    return role.filter((p) => !picked.includes(p))
+}
+
 const saveMember = async () =>{
-    if(!validateForm())return
     try{
-        form.value.id_eva
-        ? await axios.put(`${staff}/eva/${form.value.id_eva}`,form.value,{headers:{Authorization:`Bearer ${token}`}})
-        : await axios.post(`${staff}/eva`,form.value,{headers:{Authorization:`Bearer ${token}`}})
+        await axios.post(`${staff}/commit/${id_eva}`,List.value,{headers:{Authorization:`Bearer ${token}`}})
         alert('ทำรายการสำเร็จ')
         await fetch()
-        await reset()
+        // await reset()
     }catch(err){
         console.error('Error!',err)
     }
 }
 
-const del = async (id_eva:number) => {
+const del = async (id_commit:number) => {
     // console.log("ok")
     try{
         if(!confirm('ต้องการลบใช่หรือไม่?')) return
-        await axios.delete(`${staff}/eva/${id_eva}`,{headers:{Authorization:`Bearer ${token}`}})
+        await axios.delete(`${staff}/commit/${id_commit}`,{headers:{Authorization:`Bearer ${token}`}})
         await fetch()
-        await reset()
+        // await reset()
     }catch(err){
         console.error("Error Delete",err)
     }

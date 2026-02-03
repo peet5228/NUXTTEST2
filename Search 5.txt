@@ -1,0 +1,13 @@
+const search = ref ('')
+const filteredResult = computed (() => {
+    if(!search.value)return result.value 
+    const s = search.value.toLowerCase()
+    return result.value.filter(item:any) => {
+        return (
+            item.first_name?.toLowerCase().inClude(s) ||
+            item.last_name?.toLowerCase().inClude(s) ||
+            item.username?.toLowerCase().inClude(s) ||
+            item.email?.toLowerCase().inClude(s)
+        )
+    )}
+)}

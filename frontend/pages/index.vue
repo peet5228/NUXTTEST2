@@ -10,7 +10,8 @@
                         <v-alert type="error" variant="tonal" v-if="error">{{ error }}</v-alert>
                         <v-form @submit.prevent="Login">
                             <v-text-field v-model="username" label="ชื่อผู้ใช้" prepend-inner-icon="mdi-account"></v-text-field>
-                            <v-text-field v-model="password" type="password" label="รหัสผ่าน" prepend-inner-icon="mdi-lock"></v-text-field>
+                            <v-text-field v-model="password" label="รหัสผ่าน" prepend-inner-icon="mdi-lock"
+                            :type="showPw ? 'text' : 'password'" :append-inner-icon="show ? 'mdi-eye-off' : 'mdi-eye'" @click:append-inner="showPw = !showPw"></v-text-field>
                             <v-select v-model="role" :items="g" label="ประเภทสมาชิก" prepend-inner-icon="mdi-account-group" />
                             <v-btn color="#7d0c14" block type="submit">เข้าสู่ระบบ</v-btn>
                         </v-form>
@@ -35,6 +36,8 @@ const username = ref('')
 const password = ref('')
 const role = ref('')
 const g = ['ฝ่ายบุคลากร','กรรมการประเมิน','ผู้รับการประเมินผล']
+const show = ref(false)
+const showPw = ref(false)
 
 const Login = async () => {
     try{

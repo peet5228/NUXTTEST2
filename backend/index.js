@@ -15,7 +15,8 @@ app.use(fileupload())
 app.use('/uploads',express.static(path.join(__dirname,'uploads')))
 
 // ===== Public endpoint API =====
-
+const auth = require('./routes/auth')
+app.use('/api/auth',auth)
 
 // ===== Staff endpoint API =====
 

@@ -1,0 +1,21 @@
+const express = require('express')
+const db = require('../../db')
+const router = express()
+const bc = require('bcrypt')
+const {verifyToken,requireRole} = require('../../middleware/authMiddleware')
+
+// ====== DEMO ======
+// API สำหรับ GET ข้อมูล
+// router.get('/',verifyToken,requireRole('ฝ่ายบุคลากร'),async (req,res) => {
+//     try{
+//         const [rows] = await db.query(``)
+//         // res.json({rows,message:''})
+//         res.json(rows)
+//     }catch(err){
+//         console.error("Error Get",err)
+//         res.status(500).json({message:'Error Get'})
+//     }
+// })
+// ====== DEMO ======
+
+module.exports = router

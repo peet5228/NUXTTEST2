@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import axios from 'axios';
 import { useDisplay } from 'vuetify';
-// import {api} from '../API/base'
+import {api} from '../API/base'
 
 const {mdAndDown} = useDisplay()
 const isMoblie = computed(() => mdAndDown.value)

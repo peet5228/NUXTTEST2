@@ -47,7 +47,11 @@
 
 <script setup lang="ts">
 import axios from 'axios'
-// import {api} from '../API/base'
+import {api} from '../API/base'
+
+definePageMeta({
+    layout:false
+})
 
 const form = ref({
     first_name:'',

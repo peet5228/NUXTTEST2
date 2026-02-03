@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar color="#7d0c14" flat>
+    <v-app-bar color="#7d0c14" class="noP" flat>
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-toolbar-title>NTC evaluation system</v-toolbar-title>
       <v-spacer />
@@ -53,6 +53,7 @@ const roles = [
     {title:'สถานะการประเมินของผู้รับการประเมิน',to:'/Staff/StatusEva',role:'ฝ่ายบุคลากร'},
     {title:'สถานะการประเมินของกรรมการประเมิน',to:'/Staff/StatusCommit',role:'ฝ่ายบุคลากร'},
     {title:'เอกสารหรือคู่มือการประเมิน',to:'/Staff/Document',role:'ฝ่ายบุคลากร'},
+    {title:'รายงาน',to:'/Staff/Report',role:'ฝ่ายบุคลากร'},
 
     //commit
     {title:'รายชื่อผู้รับการประเมิน',to:'/Committee/',role:'กรรมการประเมิน'},
@@ -62,6 +63,7 @@ const roles = [
     {title:'แก้ไขข้อมูลส่วนตัว',to:'/Evaluatee/Edit_eva',role:'ผู้รับการประเมินผล'},
     {title:'แบบประเมินตนเอง',to:'/Evaluatee/Selfeva',role:'ผู้รับการประเมินผล'},
     {title:'ตรวจสอบผลการประเมิน',to:'/Evaluatee/Check_score',role:'ผู้รับการประเมินผล'},
+    {title:'คู่มือการประเมิน',to:'/Evaluatee/doc',role:'ผู้รับการประเมินผล'},
 ]
 const navitem = computed(() => roles.filter((item) => item.role.includes(user.value.role)))
 
@@ -87,3 +89,10 @@ const fetchUser = async () =>{
 }
 onMounted(fetchUser)
 </script>
+<style>
+@media print{
+    .v-btn,.noP{
+        display: none;
+    }
+}
+</style>

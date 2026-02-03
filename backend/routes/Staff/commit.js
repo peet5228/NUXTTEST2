@@ -35,8 +35,8 @@ router.get('/header/:id_eva',verifyToken,requireRole('ฝ่ายบุคล�
 router.get('/:id_eva',verifyToken,requireRole('ฝ่ายบุคลากร'),async (req,res) => {
     try{
         const {id_eva} = req.params
-        const [after] = await db.query(`select id_member,concat(first_name,' ',last_name) from tb_member where role='กรรมการประเมิน' order by id_member desc`)
-        const [before] = await db.query(`select id_commit,tb_member.id_member , first_name,last_name,level_commit as role from tb_member ,tb_commit,tb_eva where tb_commit.id_eva='${id_eva}' and tb_eva.id_eva=tb_commit.id_eva and tb_commit.id_member=tb_member.id_member order by tb_member.id_memberr desc`)
+        const [before] = await db.query(`select id_member,concat(first_name,' ',last_name)as fullname_commit from tb_member where role='กรรมการประเมิน' order by id_member desc`)
+        const [after] = await db.query(`select id_commit,tb_member.id_member , first_name,last_name,level_commit as role from tb_member ,tb_commit,tb_eva where tb_commit.id_eva='${id_eva}' and tb_eva.id_eva=tb_commit.id_eva and tb_commit.id_member=tb_member.id_member order by tb_member.id_member desc`)
         res.json({after,before})
         // res.json(rows)
     }catch(err){
@@ -52,12 +52,25 @@ router.post('/:id_eva',verifyToken,requireRole('ฝ่ายบุคลาก�
         await db.query(`delete from tb_commit where id_eva='${id_eva}'`)
         const m = req.body
         const v = m.map(p => [id_eva,p.id_member,p.role,'n'])
-        const [rows] = await db.query(`insert into tb_commit (id_eva,id_member,level_commit,sattus_member) values ?`,[v])
+        const [rows] = await db.query(`insert into tb_commit (id_eva,id_member,level_commit,status_commit) values ?`,[v])
         res.json({message:'Insert Success'})
         // res.json(rows)
     }catch(err){
         console.error("Error Get",err)
         res.status(500).json({message:'Error Get'})
+    }
+})
+
+// API สำหรับ Delete ข้อมูล
+router.delete('/:id_commit',verifyToken,requireRole('ฝ่ายบุคลากร'),async (req,res) => {
+    try{
+        const {id_commit} = req.params
+        const [rows] = await db.query(`delete from tb_commit where id_commit='${id_commit}'`)
+        // res.json({rows,message:''})
+        res.json(rows)
+    }catch(err){
+        console.error("Error Delete",err)
+        res.status(500).json({message:'Error Delete'})
     }
 })
 

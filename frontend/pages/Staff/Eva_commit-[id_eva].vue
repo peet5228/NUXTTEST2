@@ -17,7 +17,7 @@
                                         <v-select v-model="c.role" :label="`ตำแหน่งกรรมการคนที่ ${index+1}`" :items="ROLE(index)" />
                                     </v-col>
                                 </template>
-                                <v-btn color="blue" block>บันทึก</v-btn>
+                                <v-btn color="blue"  type="submit" block>บันทึก</v-btn>
                             </v-row>
                         </v-form>
 
@@ -39,7 +39,7 @@
                                     <td class="text-center border">{{ items.role }}</td>
                                     <td class="text-center border">
                                         <!-- <v-btn class="text-white" size="small" color="warning" @click="edit(items)">แก้ไข</v-btn>&nbsp; -->
-                                        <v-btn class="text-white" size="small" color="error" @click="del(items.id_eva)">ลบ</v-btn>
+                                        <v-btn class="text-white" size="small" color="error" @click="del(items.id_commit)">ลบ</v-btn>
                                     </td>
                                 </tr>
                             </tbody>
@@ -106,7 +106,7 @@ const ROLE = (idx:number) => {
 
 const saveMember = async () =>{
     try{
-        await axios.post(`${staff}/commit/${id_eva}`,form.value,{headers:{Authorization:`Bearer ${token}`}})
+        await axios.post(`${staff}/commit/${id_eva}`,List.value,{headers:{Authorization:`Bearer ${token}`}})
         alert('ทำรายการสำเร็จ')
         await fetch()
         // await reset()

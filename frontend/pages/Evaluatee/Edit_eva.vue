@@ -88,7 +88,8 @@ const saveMember = async () =>{
     try{
         await axios.put(`${eva}/edit_eva`,form.value,{headers:{Authorization:`Bearer ${token}`}})
         alert('แก้ไขข้อมูลสำเร็จ')
-        navigateTo('/')
+        localStorage.removeItem('token')
+        navigateTo('/',{replace:true})
     }catch(err){
         console.error('Error PUT User!',err)
     }

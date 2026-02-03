@@ -35,6 +35,7 @@
                                 </v-col>
                                 <v-col cols="12" class="text-center">
                                     <v-btn type="submit" color="#7d0c14">สมัคร</v-btn>&nbsp;&nbsp;<v-btn type="reset" color="#7d0c14">ยกเลิก</v-btn>
+                                    <p class="text-sm mt-4">มีบัญชีอยู่แล้ว? <NuxtLink to="/"><u>เข้าสู่ระบบ</u></NuxtLink></p>
                                 </v-col>
                             </v-row>
                         </v-form>

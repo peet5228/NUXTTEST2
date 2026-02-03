@@ -5,10 +5,11 @@
       <v-toolbar-title>NTC evaluation system</v-toolbar-title>
       <v-spacer />
       <!-- โปรไฟล์ -->
-       <p>ผู้ใช้งาน : {{ user.first_name }} {{ user.last_name }} <br> {{ user.role }}</p>&nbsp;&nbsp;
+       <p class="text-center">ผู้ใช้งาน : {{ user.first_name }} {{ user.last_name }} <br> {{ user.role }}</p>&nbsp;&nbsp;
       <v-btn icon="mdi-logout" variant="text" @click="logout" />&nbsp;&nbsp;
     </v-app-bar>
 
+    <ClientOnly>
     <v-navigation-drawer v-model="drawer" color="#404040" app :temporary="isMoblie" :permanent="!isMoblie">
       <v-list density="comfortable">
         <v-list-item v-for="item in navitem" :key="item.title" :to="item.to">
@@ -18,6 +19,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+    </ClientOnly>
 
     <v-main>
       <v-container fluid class="py-6">

@@ -22,7 +22,20 @@ const profile = require('./routes/profile')
 app.use('/api/profile',profile)
 
 // ===== Staff endpoint API =====
+const member = require('./routes/Staff/member')
+app.use('/api/Staff/member',member)
 
+const topic = require('./routes/Staff/topic')
+app.use('/api/Staff/topic',topic)
+
+const indicate = require('./routes/Staff/indicate')
+app.use('/api/Staff/indicate',indicate)
+
+const round_eva = require('./routes/Staff/round_eva')
+app.use('/api/Staff/round_eva',round_eva)
+
+const eva = require('./routes/Staff/eva')
+app.use('/api/Staff/eva',eva)
 
 // ===== Evaluatee endpoint API =====
 const edit_eva = require('./routes/Eva/edit_eva')

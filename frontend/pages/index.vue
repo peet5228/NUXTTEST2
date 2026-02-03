@@ -28,6 +28,8 @@ definePageMeta({
     layout:false
 })
 
+import auth from '../API/auth'
+
 const error = ref('')
 const username = ref('')
 const password = ref('')

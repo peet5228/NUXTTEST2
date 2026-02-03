@@ -2,29 +2,29 @@
     <v-container fluid class="py-10">
                 <v-card>
                     <v-sheet class="pa-4 text-center" color="">
-                        <h1 class="text-h5 font-weight-bold">จัดการตัวชี้วัด</h1>
+                        <h1 class="text-h5 font-weight-bold">จัดการรอบการประเมิน</h1>
                     </v-sheet>
                     <v-card-text>
                         <v-form @submit.prevent="saveMember">
                             <v-row>
                                 <v-col cols="12" md="6">
-                                    <v-select label="หัวข้อการประเมิน" v-model="form.id_topic" :items="topic.map( p => ({title:p.name_topic , value: p.id_topic}))" :error-messages="error.id_topic" />
+                                    <v-text-field label="วันที่เปิดรอบการประเมิน" type="date" v-model="form.day_open" :error-messages="error.day_open" />
                                 </v-col>
                                 <v-col cols="12" md="6">
-                                    <v-text-field label="ตัวช้วัด" v-model="form.name_indicate" :error-messages="error.name_indicate" />
+                                    <v-text-field label="วันที่ปิดรอบการประเมิน" type="date" v-model="form.day_out" :error-messages="error.day_out" />
                                 </v-col>
                                 <v-col cols="12" md="12">
-                                    <v-textarea rows="3" label="รายละเอียด" v-model="form.detail_indicate" :error-messages="error.detail_indicate" />
+                                    <v-select label="รอบการประเมิน" :items="[{title:'รอบการประเมินที่ 1',value:'1'},{title:'รอบการประเมินที่ 2',value:'2'}]" v-model="form.round_sys" :error-messages="error.round_sys" />
+                                </v-col>
+                                <v-col cols="12" md="6">
+                                    <v-text-field label="ปี" v-model="form.year_sys" type="number" :error-messages="error.year_sys" />
                                 </v-col>
                                  <v-col cols="12" md="6">
-                                    <v-select :items="[1,2,3,4,5]" label="น้ำหนักคะแนน" v-model="form.point_indicate" :error-messages="error.point_indicate" />
-                                </v-col>
-                                 <v-col cols="12" md="6">
-                                    <v-select :items="[{title: 'มี',value: 'y'},{title: 'ไม่มี',value: 'n'}]" label="ลักษณะตัวเลือกคะแนน" v-model="form.check_indicate" :error-messages="error.point_indicate" />
+                                    <v-select :items="[{title: 'เปิด',value: 'y'},{title: 'เปิด',value: 'n'}]" label="สถานะ เปิด-ปิด รอบการประเมิน" v-model="form.status_sys" :error-messages="error.status_sys" />
                                 </v-col>
                                 <v-row>
                                     <v-col cols="12" md="6">
-                                        <v-btn color="blue" type="submit" block>{{ form.id_indicate ? 'อัปเดต' : 'บันทึก' }}</v-btn>
+                                        <v-btn color="blue" type="submit" block>{{ form.id_sys ? 'อัปเดต' : 'บันทึก' }}</v-btn>
                                     </v-col>
                                     <v-col cols="12" md="6">
                                         <v-btn color="error" type="reset" block>ยกเลิก</v-btn>
@@ -39,23 +39,23 @@
                             <thead>
                                 <tr>
                                     <th class="border text-center">ลำดับ</th>
-                                    <th class="border text-center">หัวข้อการประเมิน</th>
-                                    <th class="border text-center">ตัวชี้วัด</th>
-                                    <th class="border text-center">น้ำหนักคะแนน</th>
-                                    <th class="border text-center">ลักษณะตัวเลือกคะแนน</th>
+                                    <th class="border text-center">วันที่เปิดรอบการรอบการประเมิน</th>
+                                    <th class="border text-center">วันที่ปิดรอบการรอบการประเมิน</th>
+                                    <th class="border text-center">รอบการประเมิน</th>
+                                    <th class="border text-center">สถานะ เปิด-ปิด รอบการประเมิน</th>
                                     <th class="border text-center">จัดการ</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(items,index) in result" :key="items.id_indicate">
+                                <tr v-for="(items,index) in result" :key="items.id_sys">
                                     <td class="text-center border">{{ index+1 }}</td>
-                                    <td class="text-center border">{{ items.name_topic }}</td>
-                                    <td class="text-center border">{{ items.name_indicate }}<br><span class="opacity-80">{{ items.detail_indicate }}</span></td>
-                                    <td class="text-center border">{{ items.point_indicate }}</td>
-                                    <td class="text-center border">{{ items.check_indicate === 'y' ? 'มี' : 'ไม่มี' }}</td>
+                                    <td class="text-center border">{{ items.day_open }}</td>
+                                    <td class="text-center border">{{ items.day_out }}</td>
+                                    <td class="text-center border">รอบการประเมินที่ {{ items.round_sys }} ปี {{ items.year_sys }}</td>
+                                    <td class="text-center border">{{ items.status_sys === 'y' ? 'เปิด' : 'ปิด' }}</td>
                                     <td class="text-center border">
                                         <v-btn class="text-white" size="small" color="warning" @click="edit(items)">แก้ไข</v-btn>&nbsp;
-                                        <v-btn class="text-white" size="small" color="error" @click="del(items.id_indicate)">ลบ</v-btn>
+                                        <v-btn class="text-white" size="small" color="error" @click="del(items.id_sys)">ลบ</v-btn>
                                     </td>
                                 </tr>
                                 <tr v-if="result.length === 0">
@@ -79,22 +79,22 @@ const result = ref([])
 const topic = ref([])
 
 const form = ref({
-    id_indicate:null,
-    id_topic: null,
-    name_indicate:'',
-    detail_indicate:'',
-    point_indicate:'',
-    check_indicate:'',
+    id_sys:null,
+    day_open: null,
+    day_out:'',
+    round_sys:'',
+    year_sys:'',
+    status_sys:'',
 })
 
 const reset = () => {
     form.value = {
-        id_indicate:null,
-        id_topic: null,
-        name_indicate:'',
-        detail_indicate:'',
-        point_indicate:'',
-        check_indicate:'',
+        id_sys:null,
+        day_open: null,
+        day_out:'',
+        round_sys:'',
+        year_sys:'',
+        status_sys:'',
     }
 }
 
@@ -107,21 +107,18 @@ const error = ref<Record<string,string>>({})
 function validateForm(){
     error.value = {}
     const f = form.value
-    if(!f.id_topic)error.value.id_topic='กรุณาเลือกชื่อหัวข้อการประเมิน!'
-    if(!f.name_indicate)error.value.name_indicate='กรุณาเลือกชื่อหัวข้อการประเมิน!'
-    if(!f.detail_indicate)error.value.detail_indicate='กรุณากรอกรายละเอียด!'
-    if(!f.point_indicate)error.value.point_indicate='กรุณาเลือกน้ำหนักคะแนน!'
-    if(!f.check_indicate)error.value.check_indicate='กรุณาเลือกลักษณะตัวเลือกคะแนน!'
+    if(!f.day_open)error.value.day_open='กรุณาเลือกวันที่เปิดรอบการประเมิน!'
+    if(!f.day_out)error.value.day_out='กรุณาเลือกวันที่ปิดรอบการประเมิน!'
+    if(!f.round_sys)error.value.round_sys='กรุณาเลือกรอบการประเมิน!'
+    if(!f.year_sys)error.value.year_sys='กรุณากรอกปี!'
+    if(!f.status_sys)error.value.status_sys='กรุณาเลือกสถานะรอบการประเมิน!'
     return Object.keys(error.value).length === 0
 }
 
 const fetch = async () => {
     try{
-        const res = await axios.get(`${staff}/topic`,{headers:{Authorization:`Bearer ${token}`}})
-        topic.value = res.data
-        console.log("REsponse",res.data)
-        const r = await axios.get(`${staff}/indicate`,{headers:{Authorization:`Bearer ${token}`}})
-        result.value = r.data
+        const res = await axios.get(`${staff}/round_eva`,{headers:{Authorization:`Bearer ${token}`}})
+        result.value = res.data
     }catch(err){
         console.error("Error Fetching",err)
     }
@@ -130,9 +127,9 @@ const fetch = async () => {
 const saveMember = async () =>{
     if(!validateForm())return
     try{
-        form.value.id_indicate
-        ? await axios.put(`${staff}/indicate/${form.value.id_indicate}`,form.value,{headers:{Authorization:`Bearer ${token}`}})
-        : await axios.post(`${staff}/indicate`,form.value,{headers:{Authorization:`Bearer ${token}`}})
+        form.value.id_sys
+        ? await axios.put(`${staff}/round_eva/${form.value.id_sys}`,form.value,{headers:{Authorization:`Bearer ${token}`}})
+        : await axios.post(`${staff}/round_eva`,form.value,{headers:{Authorization:`Bearer ${token}`}})
         alert('ทำรายการสำเร็จ')
         await fetch()
         await reset()
@@ -141,11 +138,11 @@ const saveMember = async () =>{
     }
 }
 
-const del = async (id_indicate:number) => {
+const del = async (id_sys:number) => {
     console.log("ok")
     try{
         if(!confirm('ต้องการลบใช่หรือไม่?')) return
-        await axios.delete(`${staff}/indicate/${id_indicate}`,{headers:{Authorization:`Bearer ${token}`}})
+        await axios.delete(`${staff}/round_eva/${id_sys}`,{headers:{Authorization:`Bearer ${token}`}})
         await fetch()
         await reset()
     }catch(err){

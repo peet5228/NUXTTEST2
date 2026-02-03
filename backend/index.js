@@ -52,6 +52,10 @@ app.use('/api/Staff/doc',doc)
 const sc_eva = require('./routes/Staff/score_member')
 app.use('/api/Staff/score_member',sc_eva)
 
+const commit_score = require('./routes/Staff/commit_score')
+app.use('/api/Staff/commit_score',commit_score)
+
+
 // ===== Evaluatee endpoint API =====
 const edit_eva = require('./routes/Eva/edit_eva')
 app.use('/api/Eva/edit_eva',edit_eva)

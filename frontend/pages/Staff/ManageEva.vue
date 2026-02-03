@@ -38,7 +38,7 @@
                         </v-form>
 
                         <br><br><br>
-
+                        <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="ค้นหา"></v-text-field>
                         <v-table>
                             <thead>
                                 <tr>
@@ -50,7 +50,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(items,index) in result" :key="items.id_member">
+                                <tr v-for="(items,index) in filteredResult" :key="items.id_member">
                                     <td class="text-center border">{{ index+1 }}</td>
                                     <td class="text-center border">{{ items.first_name }} {{ items.last_name }}<br><span class="opacity-80">{{ items.role }}</span></td>
                                     <td class="text-center border">{{ items.email }}</td>
@@ -60,7 +60,7 @@
                                         <v-btn class="text-white" size="small" color="error" @click="del(items.id_member)">ลบ</v-btn>
                                     </td>
                                 </tr>
-                                <tr v-if="result.length === 0">
+                                <tr v-if="filteredResult.length === 0">
                                     <td class="text-center border" colspan="10">ไม่พบข้อมูล</td>
                                 </tr>
                             </tbody>
@@ -73,11 +73,25 @@
 <script setup lang="ts">
 import axios from 'axios'
 import {api,staff} from '../../API/base'
-import { consoleError } from 'vuetify/lib/util/console.mjs'
+// import { consoleError } from 'vuetify/lib/util/console.mjs'
 
 const token = process.client ? localStorage.getItem("token") : null
 
 const result = ref([])
+
+const search = ref ('')
+const filteredResult = computed (() => {
+    if(!search.value)return result.value 
+    const s = search.value.toLowerCase()
+    return result.value.filter((item:any) => {
+        return (
+            item.first_name?.toLowerCase().includes(s) ||
+            item.last_name?.toLowerCase().includes(s) ||
+            item.username?.toLowerCase().includes(s) ||
+            item.email?.toLowerCase().includes(s)
+        )
+    })
+})
 
 const form = ref({
     id_member: null,

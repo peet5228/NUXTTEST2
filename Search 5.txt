@@ -9,5 +9,5 @@ const filteredResult = computed (() => {
             item.username?.toLowerCase().inClude(s) ||
             item.email?.toLowerCase().inClude(s)
         )
-    )}
-)}
+    }
+})

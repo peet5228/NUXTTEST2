@@ -72,6 +72,9 @@ app.use('/api/Commit/score_commit',score_commit2)
 const save_score = require('./routes/Commit/save_score')
 app.use('/api/Commit/save_score',save_score)
 
+const signature = require('./routes/Commit/signature')
+app.use('/api/Commit/signature',signature)
+
 app.use((req,res) => res.status(404).json({message:'Invalid Routes!'}))
 
 app.listen(3001 , () => console.log("Server Running On Port 3001"))

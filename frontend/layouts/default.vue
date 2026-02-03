@@ -59,6 +59,7 @@ const roles = [
     {title:'รายชื่อผู้รับการประเมิน',to:'/Committee/',role:'กรรมการประเมิน'},
     {title:'ดำเนินการประเมิน',to:'/Committee/Show_eva',role:'กรรมการประเมิน'},
     {title:'ตรวจสอบและยืนยันผล',to:'/Committee/Check_confirm',role:'กรรมการประเมิน'},
+    {title:'คู่มือการประเมิน',to:'/Committee/doc',role:'กรรมการประเมิน'},
 
     //eva
     {title:'หน้าหลัก',to:'/Evaluatee/',role:'ผู้รับการประเมินผล'},
@@ -93,7 +94,7 @@ onMounted(fetchUser)
 </script>
 <style>
 @media print{
-    .v-btn,.noP{
+    .v-btn,.noP,p,.v-toolbar-title{
         display: none;
     }
 }

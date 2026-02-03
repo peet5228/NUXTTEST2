@@ -78,7 +78,7 @@ router.get('/doc',verifyToken,requireRole('ผู้รับการประ�
 })
 
 // API สำหรับ GET ข้อมูล
-router.get('/doc',verifyToken,requireRole('กรรมการปะเมิน'),async (req,res) => {
+router.get('/com/doc',verifyToken,requireRole('กรรมการประเมิน'),async (req,res) => {
     try{
         const [rows] = await db.query(`select * from tb_doc order by id_doc desc`)
         // res.json({rows,message:''})

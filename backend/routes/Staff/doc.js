@@ -38,12 +38,12 @@ router.post('/',verifyToken,requireRole('ฝ่ายบุคลากร'),asy
     try{
         const {name_doc} = req.body
         const file = req.files?.file
-        const maxSize = 10 * 1026 * 1026
+        const maxSize = 10 * 1024 * 1024
         if(file.size > maxSize) return res.status(400).json({message:'ไฟล์มีขนาดใหญ่เกินไป (ไม่เกิน 10 MB)'})
         const filename = Date.now() + path.extname(file.name).toLowerCase()
         await file.mv(path.join(uploadDir,filename))
         await db.query(`insert into tb_doc (name_doc,day_doc,file) values (?,CURDATE(),?)`,[name_doc,filename])
-        res.status(402).json({message:'Upload Success'})
+        res.status(201).json({message:'Upload Success'})
         // res.json(rows)
     }catch(err){
         console.error("Error Upload",err)
@@ -62,7 +62,7 @@ router.delete('/:id_doc',verifyToken,requireRole('ฝ่ายบุคลาก
         }
         await db.query(`delete from tb_doc where id_doc='${id_doc}'`)
         res.json({message:'Delete Success'})
-        res.json(rows)
+        // res.json(rows)
     }catch(err){
         console.error("Error delete",err)
         res.status(500).json({message:'Error delete'})

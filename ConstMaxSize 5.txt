@@ -1,0 +1,5 @@
+const maxSize = 10 * 1024 * 1024;
+if (File.size > maxSize) {
+    return res.status(400).json({ messages:'ไฟล์มีขนาดใหญ่เกินไป (จำกัดไม่เกิน 10 MB)'});
+}
+

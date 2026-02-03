@@ -18,8 +18,18 @@ app.use('/uploads',express.static(path.join(__dirname,'uploads')))
 const auth = require('./routes/auth')
 app.use('/api/auth',auth)
 
-// ===== Staff endpoint API =====
+const profile = require('./routes/profile')
+app.use('/api/profile',profile)
 
+// ===== Staff endpoint API =====
+const member = require('./routes/Staff/member')
+app.use('/api/Staff/member',member)
+
+const topic = require('./routes/Staff/topic')
+app.use('/api/Staff/topic',topic)
+
+const indicate = require('./routes/Staff/indicate')
+app.use('/api/Staff/indicate',indicate)
 
 // ===== Evaluatee endpoint API =====
 

@@ -43,11 +43,13 @@ const roles = [
     //staff
     {title:'หน้าหลัก',to:'/Staff/',role:'ฝ่ายบุคลากร'},
 
-    //staff
+    //commit
     {title:'รายชื่อผู้รับการประเมิน',to:'/Committee/',role:'กรรมการประเมิน'},
 
-    //staff
+    //eva
     {title:'หน้าหลัก',to:'/Evaluatee/',role:'ผู้รับการประเมินผล'},
+    {title:'แก้ไขข้อมูลส่วนตัว',to:'/Evaluatee/Edit_eva',role:'ผู้รับการประเมินผล'},
+    {title:'แบบประเมินตนเอง',to:'/Evaluatee/Selfeva',role:'ผู้รับการประเมินผล'},
 ]
 const navitem = computed(() => roles.filter((item) => item.role.includes(user.value.role)))
 
@@ -59,11 +61,16 @@ const logout = async () =>{
 
 const fetchUser = async () =>{
     const token = localStorage.getItem('token')
+    if(!token){
+      return await navigateTo('/',{replace:true})
+    }
     try{
         const res = await axios.get(`${api}/profile`,{headers:{Authorization:`Bearer ${token}`}})
         user.value = res.data
     }catch(err){
         console.error('Error GET Profile!',err)
+        localStorage.removeItem('token')
+        await navigateTo('/',{replace:true})
     }
 }
 onMounted(fetchUser)

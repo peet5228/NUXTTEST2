@@ -25,7 +25,11 @@ app.use('/api/profile',profile)
 
 
 // ===== Evaluatee endpoint API =====
+const edit_eva = require('./routes/Eva/edit_eva')
+app.use('/api/Eva/edit_eva',edit_eva)
 
+const selfeva = require('./routes/Eva/selfeva')
+app.use('/api/Eva/selfeva',selfeva)
 
 // ===== Committee endpoint API =====
 
